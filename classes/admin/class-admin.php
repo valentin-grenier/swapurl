@@ -6,10 +6,14 @@
 
 class SWAPURL_Admin
 {
+    private $logger;
+
     public function __construct()
     {
+        $this->logger = new SWAPURL_Logger();
         add_action('admin_menu', array($this, 'add_admin_page'));
         add_action('admin_post_swapurl_upload', array($this, 'handle_file_upload'));
+        add_action('admin_post_swapurl_clear_logs', array($this, 'clear_logs'));
     }
 
     public function add_admin_page()
@@ -21,7 +25,6 @@ class SWAPURL_Admin
             'swapurl',
             array($this, 'render_admin_page'),
             'dashicons-randomize',
-
         );
     }
 
@@ -64,12 +67,12 @@ class SWAPURL_Admin
             wp_die(__('A file with the same name already exists. Please rename your file and try again.', 'swapurl'));
         }
 
-        if (move_uploaded_file($uploaded_file['tmp_name'], $destination)) {
-            wp_redirect(admin_url('admin.php?page=swapurl&upload_success=1'));
-            exit;
-        } else {
+        if (!move_uploaded_file($uploaded_file['tmp_name'], $destination)) {
             wp_die(__('Failed to save uploaded file.'));
         }
+
+        wp_redirect(admin_url('admin.php?page=swapurl&upload_success=1'));
+        exit;
     }
 
     private function validate_json_file($file_path)
@@ -95,5 +98,22 @@ class SWAPURL_Admin
         }
 
         return true;
+    }
+
+    public function clear_logs()
+    {
+        # Check if user has permissions
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'swapurl'));
+        }
+
+        # Check if nonce is valid
+        if (!isset($_POST['swapurl_nonce']) || !wp_verify_nonce($_POST['swapurl_nonce'], 'swapurl_clear_logs_action')) {
+            wp_die(__('Nonce verification failed.', 'swapurl'));
+        }
+
+        $this->logger->clear_logs();
+        wp_redirect(admin_url('admin.php?page=swapurl&logs_cleared=1'));
+        exit;
     }
 }

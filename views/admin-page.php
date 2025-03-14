@@ -1,3 +1,7 @@
+<?php
+$logger = new SWAPURL_Logger();
+?>
+
 <div class="wrap">
     <?php if (isset($_GET['upload_success']) && $_GET['upload_success']) {
         echo '<div class="notice notice-success is-dismissible"><p>File uploaded successfully.</p></div>';
@@ -22,4 +26,22 @@
         <input type="file" name="swapurl_json_file">
         <input type="submit" value="Upload JSON File" class="button-primary">
     </form>
+
+    <h2>Process Logs</h2>
+    <form action="<?php echo admin_url('admin-post.php'); ?>" method="post">
+        <?php wp_nonce_field('swapurl_clear_logs_action', 'swapurl_nonce'); ?>
+        <input type="hidden" name="action" value="swapurl_clear_logs">
+        <input type="submit" value="Clear Logs" class="button-secondary">
+    </form>
+
+    <pre style="background:#f5f5f5; padding:10px; border:1px solid #ddd; max-height:300px; overflow:auto;">
+        <?php
+        $logs = $this->logger->get_logs();
+        if (!empty($logs)) {
+            echo implode("\n", $logs);
+        } else {
+            echo "No logs available.";
+        }
+        ?>
+    </pre>
 </div>

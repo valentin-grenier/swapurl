@@ -35,5 +35,6 @@ function swapurl_initialize_plugin()
 
     # Load plugin classes
     new SWAPURL_Admin();
+    new SWAPURL_Logger();
 }
 add_action('plugins_loaded', 'swapurl_initialize_plugin');
