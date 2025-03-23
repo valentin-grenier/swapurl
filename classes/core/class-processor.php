@@ -51,7 +51,7 @@ class SWAPURL_Processor
                 $old_url = untrailingslashit(trim($mapping['old_url']));
                 $new_url = untrailingslashit(trim($mapping['new_url']));
 
-                // DEBUG: Check if old_url exists
+                # DEBUG: Check if old_url exists
                 $match = $wpdb->get_var(
                     $wpdb->prepare(
                         "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_content LIKE %s",
@@ -66,7 +66,7 @@ class SWAPURL_Processor
                     $this->logger->write_log("✅ Found {$match} match(es) for '{$old_url}'");
                 }
 
-                // Attempt the replacement
+                # Attempt the replacement
                 $updated_rows = $wpdb->query(
                     $wpdb->prepare(
                         "UPDATE {$wpdb->posts} SET post_content = REPLACE(post_content, %s, %s) WHERE post_content LIKE %s",
