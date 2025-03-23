@@ -24,14 +24,14 @@ class SWAPURL_Logger
     # Log a successful URL replacement
     public function log_success($old_url, $new_url, $updated_rows)
     {
-        $message = sprintf("[SUCCESS] Replaced '%s' with '%s' in %d posts.", $old_url, $new_url, $updated_rows);
+        $message = sprintf("[✅] Replaced '%s' with '%s' in %d posts.", $old_url, $new_url, $updated_rows);
         $this->write_log($message);
     }
 
     # Log an error
     public function log_error($error_message, $data = null)
     {
-        $message = "[ERROR] " . $error_message;
+        $message = "[⚠️] " . $error_message;
         if ($data) {
             $message .= " - " . json_encode($data);
         }
@@ -39,7 +39,7 @@ class SWAPURL_Logger
     }
 
     # Write log message to log file
-    private function write_log($message)
+    public function write_log($message)
     {
         $timestamp = date("Y-m-d H:i:s");
         file_put_contents($this->log_file, "[$timestamp] " . $message . PHP_EOL, FILE_APPEND);

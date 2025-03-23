@@ -14,6 +14,7 @@ class SWAPURL_Admin
         add_action('admin_menu', array($this, 'add_admin_page'));
         add_action('admin_post_swapurl_upload', array($this, 'handle_file_upload'));
         add_action('admin_post_swapurl_clear_logs', array($this, 'clear_logs'));
+        add_action('admin_post_swapurl_test', array($this, 'run_tests'));
     }
 
     public function add_admin_page()
@@ -71,6 +72,11 @@ class SWAPURL_Admin
             wp_die(__('Failed to save uploaded file.'));
         }
 
+        # Schedule the cron job to run 5 seconds after file upload
+        $cron = new SWAPURL_Cron();
+        $cron->schedule_cron();
+
+        # Redirect to the admin page with a success message
         wp_redirect(admin_url('admin.php?page=swapurl&upload_success=1'));
         exit;
     }
@@ -114,6 +120,30 @@ class SWAPURL_Admin
 
         $this->logger->clear_logs();
         wp_redirect(admin_url('admin.php?page=swapurl&logs_cleared=1'));
+        exit;
+    }
+
+    public function run_tests()
+    {
+        # Check if user has permissions
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'swapurl'));
+        }
+
+        # Check if nonce is valid
+        if (!isset($_POST['swapurl_nonce']) || !wp_verify_nonce($_POST['swapurl_nonce'], 'swapurl_test_action')) {
+            wp_die(__('Nonce verification failed.', 'swapurl'));
+        }
+
+        $processor = new SWAPURL_Processor(SWAPURL_JSON_DIR . '/test.json');
+        $result = $processor->process_replacements();
+
+        if ($result['success_count'] === $result['total_count']) {
+            wp_redirect(admin_url('admin.php?page=swapurl&tests_passed=1'));
+        } else {
+            wp_redirect(admin_url('admin.php?page=swapurl&tests_failed=1'));
+        }
+
         exit;
     }
 }

@@ -27,6 +27,7 @@ require_once SWAPURL_PLUGIN_DIR . 'classes/admin/class-admin.php';
 require_once SWAPURL_PLUGIN_DIR . 'classes/core/class-plugin.php';
 require_once SWAPURL_PLUGIN_DIR . 'classes/core/class-processor.php';
 require_once SWAPURL_PLUGIN_DIR . 'classes/core/class-logger.php';
+require_once SWAPURL_PLUGIN_DIR . 'classes/core/class-cron.php';
 
 # Initialize the Plugin
 function swapurl_initialize_plugin()
@@ -36,5 +37,6 @@ function swapurl_initialize_plugin()
     # Load plugin classes
     new SWAPURL_Admin();
     new SWAPURL_Logger();
+    new SWAPURL_Cron();
 }
 add_action('plugins_loaded', 'swapurl_initialize_plugin');

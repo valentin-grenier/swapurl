@@ -59,17 +59,20 @@ class SWAPURL_Processor
                 )
             );
 
-            if ($updated_rows) {
+            if ($updated_rows && $updated_rows > 0) {
                 $success_count += $updated_rows;
                 $this->logger->log_success($old_url, $new_url, $updated_rows);
             } else {
-                $this->logger->log_error("Database update failed", $mapping);
+                $this->logger->log_error("Failed", $mapping);
+                continue;
             }
-
-            return array(
-                'success_count' => $success_count,
-                'total_count' => $total_count,
-            );
         }
+
+        $this->logger->write_log("Processed {$success_count} URLs out of {$total_count}");
+
+        return array(
+            'success_count' => $success_count,
+            'total_count' => $total_count,
+        );
     }
 }

@@ -18,12 +18,19 @@ $logger = new SWAPURL_Logger();
         }
     </pre>
 
+    <h2>Test</h2>
+    <form action="<?php echo admin_url('admin-post.php'); ?>" method="post">
+        <?php wp_nonce_field('swapurl_test_action', 'swapurl_nonce'); ?>
+        <input type="hidden" name="action" value="swapurl_test">
+        <input type="submit" value="Run Tests" class="button-primary">
+    </form>
+
     <p>Upload your JSON file below:</p>
 
     <form action="<?php echo admin_url('admin-post.php'); ?>" method="post" enctype="multipart/form-data">
         <?php wp_nonce_field('swapurl_upload_action', 'swapurl_nonce'); ?>
         <input type="hidden" name="action" value="swapurl_upload">
-        <input type="file" name="swapurl_json_file">
+        <input type="file" name="swapurl_json_file" accept="application/json">
         <input type="submit" value="Upload JSON File" class="button-primary">
     </form>
 
