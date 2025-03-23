@@ -31,10 +31,12 @@ class SWAPURL_Logger
     # Log an error
     public function log_error($error_message, $data = null)
     {
-        $message = "[⚠️] " . $error_message;
+        $message = "⚠️ " . $error_message;
+
         if ($data) {
-            $message .= " - " . json_encode($data);
+            $message .= " - " . json_encode($data, JSON_UNESCAPED_SLASHES);
         }
+
         $this->write_log($message);
     }
 

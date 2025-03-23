@@ -41,7 +41,7 @@ $logger = new SWAPURL_Logger();
         <input type="submit" value="Clear Logs" class="button-secondary">
     </form>
 
-    <pre style="background:#f5f5f5; padding:10px; border:1px solid #ddd; max-height:300px; overflow:auto;">
+    <pre style="background:#f5f5f5; padding:10px; border:1px solid #ddd; max-height:300px; overflow:auto; white-space: pre-line;">
         <?php
         $logs = $this->logger->get_logs();
         if (!empty($logs)) {
